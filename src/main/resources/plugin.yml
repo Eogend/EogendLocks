@@ -1,0 +1,12 @@
+name: EogendLocks
+version: 1.0.0
+author: LavaPower
+main: fr.lavapower.eogendlocks.EogendLocks
+api-version: 1.19
+prefix: Eogend
+
+commands:
+  lock:
+    usage: /<command> <text>
+    aliases: []
+    description: Give une clé pour un texte
