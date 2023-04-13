@@ -1,10 +1,12 @@
 package fr.lavapower.eogendlocks.listener;
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.EnderChest;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Openable;
@@ -20,7 +22,7 @@ public class LockListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock()) {
             Block block = event.getClickedBlock();
-            if(block.getBlockData().getMaterial().toString().contains("CHEST")) {
+            if(block.getBlockData().getMaterial() != Material.ENDER_CHEST && block.getBlockData().getMaterial().toString().contains("CHEST")) {
                 Chest chest = (Chest) block.getState();
                 ItemStack firstItem = chest.getBlockInventory().getItem(0);
                 if(!isValid(event.getItem(), firstItem) && !event.getPlayer().isOp()) {
@@ -56,7 +58,10 @@ public class LockListener implements Listener {
     private boolean isValid(ItemStack playerItem, ItemStack firstItem) {
         if(playerItem != null && playerItem.hasItemMeta() && playerItem.getType() == Material.TRIPWIRE_HOOK && playerItem.getItemMeta().getDisplayName().contains("Clé") &&
                 firstItem != null && firstItem.hasItemMeta() && firstItem.getType() == Material.PAPER) {
-            return NBT.get(playerItem, nbt -> nbt.getString("key")).equals(firstItem.getItemMeta().getDisplayName());
+
+            String a = ChatColor.stripColor(NBT.get(playerItem, nbt -> nbt.getString("key")));
+            String b = ChatColor.stripColor(firstItem.getItemMeta().getDisplayName());
+            return a.equals(b);
         }
         return firstItem == null || !firstItem.hasItemMeta() || firstItem.getType() != Material.PAPER;
     }
