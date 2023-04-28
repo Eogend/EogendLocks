@@ -4,10 +4,7 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.EnderChest;
-import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.*;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
@@ -22,7 +19,15 @@ public class LockListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock()) {
             Block block = event.getClickedBlock();
-            if(block.getBlockData().getMaterial() != Material.ENDER_CHEST && block.getBlockData().getMaterial().toString().contains("CHEST")) {
+            if(block.getBlockData().getMaterial() == Material.BARREL) {
+                Barrel barrel = (Barrel) block.getState();
+                ItemStack firstItem = barrel.getInventory().getItem(0);
+                if(!isValid(event.getItem(), firstItem) && !event.getPlayer().isOp()) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage("Un verrouillage est présent.");
+                }
+            }
+            else if(block.getBlockData().getMaterial() != Material.ENDER_CHEST && block.getBlockData().getMaterial().toString().contains("CHEST")) {
                 Chest chest = (Chest) block.getState();
                 ItemStack firstItem = chest.getBlockInventory().getItem(0);
                 if(!isValid(event.getItem(), firstItem) && !event.getPlayer().isOp()) {
